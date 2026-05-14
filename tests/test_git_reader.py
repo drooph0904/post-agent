@@ -83,5 +83,5 @@ def test_summarize_changes_includes_count_and_messages(repo):
     reader = GitReader(str(repo_path))
     commits = reader.get_commits_last_hours(24)
     summary = reader.summarize_changes(commits)
-    assert "New commits since last post: 3" in summary
+    assert "Total commits: 3" in summary
     assert "third commit" in summary

@@ -80,19 +80,9 @@ class GitReader:
             return None
         return commits[0]["full_hash"]
 
-    def get_repo_stats(self) -> dict:
-        all_commits = list(self.repo.iter_commits())
-        return {
-            "repo_name": Path(self.repo_path).name,
-            "current_branch": self.repo.active_branch.name,
-            "total_commits": len(all_commits),
-            "last_commit_message": all_commits[0].message.strip() if all_commits else "",
-        }
-
     def summarize_changes(self, commits: list[dict]) -> str:
         if not commits:
             return ""
-        stats = self.get_repo_stats()
         all_files: set[str] = set()
         total_ins = 0
         total_del = 0
@@ -101,8 +91,7 @@ class GitReader:
             total_ins += c["insertions"]
             total_del += c["deletions"]
         lines = [
-            f"Repository: {stats['repo_name']} (branch: {stats['current_branch']})",
-            f"New commits since last post: {len(commits)}",
+            f"Total commits: {len(commits)}",
             "",
             "Commits (newest first):",
         ]
@@ -112,11 +101,3 @@ class GitReader:
         lines.append(f"Files touched: {', '.join(sorted(all_files))}")
         lines.append(f"Total changes: +{total_ins} lines added, -{total_del} lines removed")
         return "\n".join(lines)
-
-    def validate_repo(self) -> bool:
-        try:
-            next(self.repo.iter_commits())
-            return True
-        except StopIteration:
-            _console.print("[yellow]⚠️  Repository has no commits yet.[/yellow]")
-            return False

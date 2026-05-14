@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "devpost-agent"
+version = "0.1.0"
+description = "Daily Git progress to Reddit and clipboard tweet — student developer agent"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.40.0",
+    "rich==13.7.1",
+    "click==8.1.7",
+    "python-dotenv==1.0.1",
+    "praw==7.7.1",
+    "gitpython==3.1.43",
+    "pyperclip==1.8.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-mock>=3.10",
+]
+
+[project.scripts]
+devpost = "devpost.main:cli"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["devpost*"]

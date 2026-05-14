@@ -21,8 +21,6 @@
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Optional
-
 import git
 from rich.console import Console
 
@@ -72,15 +70,17 @@ class GitReader:
             if commit_dt >= cutoff:
                 results.append(self._format_commit(commit))
             else:
-                break
+                break  # safe: iter_commits() returns in reverse-chronological order on linear history
         return results
 
-    def get_newest_hash(self, commits: list[dict]) -> Optional[str]:
+    @staticmethod
+    def get_newest_hash(commits: list[dict]) -> str | None:
         if not commits:
             return None
         return commits[0]["full_hash"]
 
-    def summarize_changes(self, commits: list[dict]) -> str:
+    @staticmethod
+    def summarize_changes(commits: list[dict]) -> str:
         if not commits:
             return ""
         all_files: set[str] = set()

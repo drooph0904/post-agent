@@ -85,3 +85,11 @@ def test_summarize_changes_includes_count_and_messages(repo):
     summary = reader.summarize_changes(commits)
     assert "Total commits: 3" in summary
     assert "third commit" in summary
+
+
+def test_since_hash_not_found_falls_back_to_24h(repo):
+    repo_path, _ = repo
+    reader = GitReader(str(repo_path))
+    # Pass a garbage hash that doesn't exist in history; fallback returns last 24h commits
+    result = reader.get_commits_since_hash("deadbeef000000")
+    assert len(result) > 0

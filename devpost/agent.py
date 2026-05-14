@@ -26,7 +26,6 @@
 #   → if anything_posted: PostLog.save_last_hash(repo, newest_hash)
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 from pathlib import Path
-from typing import Optional
 
 import anthropic
 

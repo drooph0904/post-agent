@@ -73,10 +73,11 @@ def test_log_saved_when_tweet_copied(tmp_path):
 def test_results_reset_between_runs(tmp_path):
     agent, mock_log, mock_tweet, mock_reddit = make_agent()
     commits = [{"full_hash": "abc123full", "message": "test"}]
+    # Inject a stale key before the second run to verify it gets wiped
+    agent.results["stale_key"] = "stale_value"
     run_with_mocks(agent, mock_log, mock_tweet, mock_reddit, tmp_path, commits=commits)
-    run_with_mocks(agent, mock_log, mock_tweet, mock_reddit, tmp_path, commits=commits)
+    assert "stale_key" not in agent.results
     assert "tweet" in agent.results
-    # No stale results from first run bleeding through
 
 def test_dry_run_does_not_save_log(tmp_path):
     agent, mock_log, mock_tweet, mock_reddit = make_agent()

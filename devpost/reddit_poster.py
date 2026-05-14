@@ -69,9 +69,14 @@ class RedditPoster:
     def __init__(self, client: anthropic.Anthropic, config: ConfigManager) -> None:
         self.client = client
         self.model = "claude-sonnet-4-6"
+        client_id = config.get("reddit_client_id")
+        if client_id is None:
+            # No credentials present — defer reddit init (e.g. dry-run mode)
+            self.reddit = None
+            return
         try:
             self.reddit = praw.Reddit(
-                client_id=config.get("reddit_client_id"),
+                client_id=client_id,
                 client_secret=config.get("reddit_client_secret"),
                 username=config.get("reddit_username"),
                 password=config.get("reddit_password"),
@@ -82,6 +87,8 @@ class RedditPoster:
             raise
 
     def validate_credentials(self) -> bool:
+        if self.reddit is None:
+            return False
         try:
             self.reddit.user.me()
             return True
@@ -127,6 +134,9 @@ class RedditPoster:
         return results
 
     def post_to_subreddit(self, subreddit: str, title: str, body: str) -> Optional[str]:
+        if self.reddit is None:
+            display.print_error(f"Reddit not initialized — cannot post to r/{subreddit}")
+            return None
         try:
             submission = self.reddit.subreddit(subreddit).submit(title=title, selftext=body)
             return submission.url

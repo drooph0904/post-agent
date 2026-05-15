@@ -38,8 +38,8 @@ SUBREDDIT_PERSONAS: dict[str, dict[str, str]] = {
         "audience": "students and beginners learning to code",
         "tone": "honest about struggles, encouraging, share what you learned not just what you built",
         "focus": "the learning journey, mistakes made, concepts understood",
-        "title_style": "Day [X] of learning — finally understood [concept]",
-        "depth": "personal — 150-200 words, mention specific things you struggled with",
+        "title_style": "Finally understood [concept] while building [project] — here's what clicked",
+        "depth": "personal — 150-200 words, mention specific things you struggled with. Do NOT invent day numbers like 'Day 20' unless the git commits mention them.",
     },
     "coding": {
         "audience": "general programmers who enjoy seeing coding projects",

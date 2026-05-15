@@ -75,7 +75,7 @@ class DevPostAgent:
             display.print_error(str(e))
             return {"status": "error", "message": str(e)}
 
-        repo_name = Path(project_path).name
+        repo_name = Path(project_path).resolve().name
         last_hash = self.post_log.get_last_hash(project_path)
 
         if force or last_hash is None:

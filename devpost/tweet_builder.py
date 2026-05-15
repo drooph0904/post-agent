@@ -59,6 +59,7 @@ class TweetBuilder:
             "- Is STRICTLY under 280 characters (count every character)\n"
             "- Shares what was actually built or learned\n"
             "- Feels genuine, like a real student developer talking\n"
+            "- If the project context includes a live demo URL (huggingface.co, vercel.app, etc), include it\n"
             "- Ends with 2-3 relevant hashtags from: #buildinpublic #learntocode "
             "#100daysofcode #webdev #coding #AI #ML #sideproject\n"
             "- Does NOT use em dashes, ellipsis, or overly formal language\n\n"

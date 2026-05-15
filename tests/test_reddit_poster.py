@@ -28,8 +28,8 @@ def test_generate_post_parses_json_response():
     poster, client = make_poster()
     post_data = {"title": "Test title", "body": "Test body here"}
     mock_response = MagicMock()
-    mock_response.content = [MagicMock(text=json.dumps(post_data))]
-    client.messages.create.return_value = mock_response
+    mock_response.choices = [MagicMock(message=MagicMock(content=json.dumps(post_data)))]
+    client.chat.completions.create.return_value = mock_response
     result = poster._generate_post("SideProject", "git summary", "context")
     assert result["title"] == "Test title"
     assert result["body"] == "Test body here"
@@ -38,8 +38,8 @@ def test_generate_post_parses_json_response():
 def test_generate_all_returns_all_six_subreddits():
     poster, client = make_poster()
     mock_response = MagicMock()
-    mock_response.content = [MagicMock(text=json.dumps({"title": "T", "body": "B"}))]
-    client.messages.create.return_value = mock_response
+    mock_response.choices = [MagicMock(message=MagicMock(content=json.dumps({"title": "T", "body": "B"})))]
+    client.chat.completions.create.return_value = mock_response
     results = poster.generate_all("summary", "context")
     assert len(results) == 6
     assert set(results.keys()) == set(SUBREDDIT_PERSONAS.keys())

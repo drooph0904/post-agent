@@ -10,7 +10,7 @@ def builder():
 
 def _make_response(text: str) -> MagicMock:
     r = MagicMock()
-    r.content = [MagicMock(text=text)]
+    r.choices = [MagicMock(message=MagicMock(content=text))]
     return r
 
 
@@ -36,24 +36,24 @@ def test_build_prompt_retry_contains_overage_and_previous(builder):
 
 def test_generate_valid_tweet_returned_immediately(builder):
     short_tweet = "Built something cool today! #buildinpublic"
-    builder.client.messages.create.return_value = _make_response(short_tweet)
+    builder.client.chat.completions.create.return_value = _make_response(short_tweet)
     tweet, count = builder.generate("summary", "context")
     assert tweet == short_tweet
     assert count == len(short_tweet)
     assert count <= 280
-    assert builder.client.messages.create.call_count == 1
+    assert builder.client.chat.completions.create.call_count == 1
 
 
 def test_generate_retries_when_tweet_too_long(builder):
     long_tweet = "x" * 300
     short_tweet = "Short. #buildinpublic"
-    builder.client.messages.create.side_effect = [
+    builder.client.chat.completions.create.side_effect = [
         _make_response(long_tweet),
         _make_response(short_tweet),
     ]
     tweet, count = builder.generate("summary", "context")
     assert tweet == short_tweet
-    assert builder.client.messages.create.call_count == 2
+    assert builder.client.chat.completions.create.call_count == 2
 
 
 def test_copy_to_clipboard_returns_true_on_success(builder):

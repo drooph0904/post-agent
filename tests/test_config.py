@@ -15,7 +15,7 @@ def test_validate_all_missing(config):
 
 
 def test_validate_all_present_via_env(config, monkeypatch):
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "ak-test")
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
     monkeypatch.setenv("REDDIT_CLIENT_ID", "cid")
     monkeypatch.setenv("REDDIT_CLIENT_SECRET", "csec")
     monkeypatch.setenv("REDDIT_USERNAME", "user")

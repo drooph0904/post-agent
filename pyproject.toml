@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Daily Git progress to Reddit and clipboard tweet — student developer agent"
 requires-python = ">=3.11"
 dependencies = [
-    "anthropic>=0.40.0",
+    "openai>=1.0.0",
     "rich==13.7.1",
     "click==8.1.7",
     "python-dotenv==1.0.1",

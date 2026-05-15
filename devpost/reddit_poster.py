@@ -13,8 +13,8 @@
 import json
 from typing import Optional
 
-import anthropic
 import praw
+from openai import OpenAI
 
 from devpost import display
 from devpost.config import ConfigManager
@@ -66,9 +66,9 @@ SUBREDDIT_PERSONAS: dict[str, dict[str, str]] = {
 
 
 class RedditPoster:
-    def __init__(self, client: anthropic.Anthropic, config: ConfigManager) -> None:
+    def __init__(self, client: OpenAI, config: ConfigManager) -> None:
         self.client = client
-        self.model = "claude-sonnet-4-6"
+        self.model = "gpt-4o-mini"
         client_id = config.get("reddit_client_id")
         if client_id is None:
             # No credentials present — defer reddit init (e.g. dry-run mode)
@@ -110,13 +110,13 @@ class RedditPoster:
             f'Return ONLY a JSON object: {{"title": "...", "body": "..."}}\n'
             f"No markdown fences, no explanation — raw JSON only."
         )
-        response = self.client.messages.create(
+        response = self.client.chat.completions.create(
             model=self.model,
             max_tokens=1024,
             messages=[{"role": "user", "content": prompt}],
             timeout=30.0,
         )
-        raw = response.content[0].text.strip()
+        raw = response.choices[0].message.content.strip()
         if raw.startswith("```"):
             raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
         data = json.loads(raw)

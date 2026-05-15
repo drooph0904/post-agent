@@ -27,7 +27,7 @@
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 from pathlib import Path
 
-import anthropic
+from openai import OpenAI
 
 from devpost import display
 from devpost.config import ConfigManager
@@ -40,7 +40,7 @@ from devpost.tweet_builder import TweetBuilder
 class DevPostAgent:
     def __init__(self, config: ConfigManager) -> None:
         self.config = config
-        self.client = anthropic.Anthropic(api_key=config.get("anthropic_api_key"))
+        self.client = OpenAI(api_key=config.get("openai_api_key"))
         self.post_log = PostLog()
         self.tweet_builder = TweetBuilder(client=self.client)
         self.reddit_poster = RedditPoster(client=self.client, config=config)

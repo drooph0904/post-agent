@@ -43,7 +43,7 @@ class ConfigManager:
 
     def validate(self) -> tuple[bool, list[str]]:
         required = [
-            "anthropic_api_key",
+            "openai_api_key",
             "reddit_client_id",
             "reddit_client_secret",
             "reddit_username",
@@ -59,7 +59,7 @@ class ConfigManager:
             title="🚀 Welcome",
         ))
         fields = {
-            "anthropic_api_key": "Anthropic API key",
+            "openai_api_key": "OpenAI API key",
             "reddit_client_id": "Reddit client ID",
             "reddit_client_secret": "Reddit client secret",
             "reddit_username": "Reddit username",

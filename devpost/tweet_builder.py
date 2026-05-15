@@ -18,17 +18,17 @@
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 from typing import Optional
 
-import anthropic
 import pyperclip
+from openai import OpenAI
 
 from devpost import display
 
 
 class TweetBuilder:
-    def __init__(self, client: anthropic.Anthropic) -> None:
+    def __init__(self, client: OpenAI) -> None:
         self.client = client
         self.max_retries = 5
-        self.model = "claude-sonnet-4-6"
+        self.model = "gpt-4o-mini"
 
     def _count_chars(self, text: str) -> int:
         return len(text)
@@ -73,15 +73,15 @@ class TweetBuilder:
             display.print_thinking(f"Generating tweet (attempt {attempt}/{self.max_retries})...")
             prompt = self._build_prompt(git_summary, context, previous_attempt, chars_over)
             try:
-                response = self.client.messages.create(
+                response = self.client.chat.completions.create(
                     model=self.model,
                     max_tokens=300,
                     messages=[{"role": "user", "content": prompt}],
                     timeout=30.0,
                 )
-                tweet = response.content[0].text.strip()
+                tweet = response.choices[0].message.content.strip()
             except Exception as e:
-                display.print_warning(f"Claude API error on attempt {attempt}: {e}")
+                display.print_warning(f"OpenAI API error on attempt {attempt}: {e}")
                 continue
 
             count = self._count_chars(tweet)

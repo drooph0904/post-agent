@@ -9,7 +9,7 @@ def make_agent():
     config = MagicMock()
     config.get.return_value = "fake_key"
     with (
-        patch("devpost.agent.anthropic.Anthropic"),
+        patch("devpost.agent.OpenAI"),
         patch("devpost.agent.PostLog") as MockLog,
         patch("devpost.agent.TweetBuilder") as MockTweet,
         patch("devpost.agent.RedditPoster") as MockReddit,

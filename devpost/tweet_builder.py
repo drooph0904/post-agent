@@ -59,7 +59,7 @@ class TweetBuilder:
             "- Is STRICTLY under 280 characters (count every character)\n"
             "- Shares what was actually built or learned\n"
             "- Feels genuine, like a real student developer talking\n"
-            "- Only include the live demo URL (if present in project context) when the commits represent a major milestone: new deployment, big feature launch, or project completion — not for bug fixes or minor changes\n"
+            "- If there is a deployment/live URL anywhere in the project context or git commits (huggingface.co, vercel.app, netlify.app, railway.app, render.com, fly.io, GitHub Pages, or any https:// link that looks like a hosted app), include it ONLY when the commits represent a major milestone: new deployment, big feature, or project completion — not for bug fixes or minor changes\n"
             "- Ends with 2-3 relevant hashtags from: #buildinpublic #learntocode "
             "#100daysofcode #webdev #coding #AI #ML #sideproject\n"
             "- Does NOT use em dashes, ellipsis, or overly formal language\n\n"

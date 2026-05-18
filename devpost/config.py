@@ -42,15 +42,13 @@ class ConfigManager:
         self._save()
 
     def validate(self) -> tuple[bool, list[str]]:
-        required = [
-            "openai_api_key",
-            "reddit_client_id",
-            "reddit_client_secret",
-            "reddit_username",
-            "reddit_password",
-        ]
+        required = ["openai_api_key"]
         missing = [f"missing: {k}" for k in required if not self.get(k)]
         return (len(missing) == 0, missing)
+
+    def has_reddit_credentials(self) -> bool:
+        keys = ["reddit_client_id", "reddit_client_secret", "reddit_username", "reddit_password"]
+        return all(self.get(k) for k in keys)
 
     def setup_wizard(self) -> None:
         _console.print(Panel(

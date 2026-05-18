@@ -11,18 +11,27 @@ def config(tmp_devpost_dir):
 def test_validate_all_missing(config):
     valid, missing = config.validate()
     assert not valid
-    assert len(missing) == 5
+    assert len(missing) == 1
+    assert "openai_api_key" in missing[0]
 
 
-def test_validate_all_present_via_env(config, monkeypatch):
+def test_validate_passes_without_reddit_credentials(config, monkeypatch):
     monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+    valid, missing = config.validate()
+    assert valid
+    assert missing == []
+
+
+def test_has_reddit_credentials_false_when_missing(config):
+    assert config.has_reddit_credentials() is False
+
+
+def test_has_reddit_credentials_true_via_env(config, monkeypatch):
     monkeypatch.setenv("REDDIT_CLIENT_ID", "cid")
     monkeypatch.setenv("REDDIT_CLIENT_SECRET", "csec")
     monkeypatch.setenv("REDDIT_USERNAME", "user")
     monkeypatch.setenv("REDDIT_PASSWORD", "pass")
-    valid, missing = config.validate()
-    assert valid
-    assert missing == []
+    assert config.has_reddit_credentials() is True
 
 
 def test_env_var_takes_priority_over_file(config, monkeypatch):

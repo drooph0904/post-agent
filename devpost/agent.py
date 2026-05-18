@@ -107,10 +107,18 @@ class DevPostAgent:
 
         # Step 4/7 — Generate Reddit posts
         display.print_step(4, 7, "Generating Reddit posts for 6 subreddits...")
-        display.print_thinking("Writing unique posts for each community...")
-        if dry_run:
+        reddit_enabled = self.reddit_poster.reddit is not None
+        if not reddit_enabled and not dry_run:
+            display.print_warning(
+                "Reddit credentials not configured — skipping Reddit posts. "
+                "Run 'devpost setup' to add them."
+            )
+            reddit_posts = {}
+        elif dry_run:
+            display.print_thinking("Writing unique posts for each community...")
             reddit_posts = {s: {"title": f"[DRY RUN] r/{s}", "body": "[DRY RUN]"} for s in SUBREDDIT_PERSONAS}
         else:
+            display.print_thinking("Writing unique posts for each community...")
             reddit_posts = self.reddit_poster.generate_all(git_summary, context)
 
         # Step 5/7 — Tweet approval
@@ -133,6 +141,8 @@ class DevPostAgent:
 
         # Step 6/7 — Reddit approval and posting
         display.print_step(6, 7, "Reddit posts review...")
+        if not reddit_posts and not dry_run:
+            display.print_thinking("No Reddit posts to review.")
         for i, (subreddit, post) in enumerate(reddit_posts.items(), 1):
             if dry_run:
                 display.print_reddit_draft(subreddit, post["title"], post["body"], i, len(reddit_posts))

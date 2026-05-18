@@ -70,7 +70,7 @@ class RedditPoster:
         self.client = client
         self.model = "gpt-4o-mini"
         client_id = config.get("reddit_client_id")
-        if client_id is None:
+        if not client_id:
             # No credentials present — defer reddit init (e.g. dry-run mode)
             self.reddit = None
             return

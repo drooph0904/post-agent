@@ -2,7 +2,7 @@ from typing import Optional
 
 from rich.console import Console
 from rich.panel import Panel
-from rich.prompt import Confirm
+from rich.prompt import Confirm, Prompt
 from rich.table import Table
 
 console = Console()
@@ -76,9 +76,27 @@ def ask_tweet_approval(tweet: str, char_count: int) -> bool:
     return Confirm.ask("  Copy this tweet to clipboard?", default=False)
 
 
+def print_reddit_full_preview(subreddit: str, title: str, body: str) -> None:
+    console.print(Panel(
+        f"[bold]{title}[/bold]\n\n{body}",
+        title=f"[bold]📄 Full Preview — r/{subreddit}[/bold]",
+        border_style="magenta",
+    ))
+
+
 def ask_reddit_approval(subreddit: str, title: str, body: str, index: int, total: int) -> bool:
     print_reddit_draft(subreddit, title, body, index, total)
-    return Confirm.ask(f"  Post to r/{subreddit}?", default=False)
+    while True:
+        choice = Prompt.ask(
+            f"  Post to r/{subreddit}? [[green]y[/green]=post, [red]n[/red]=skip, [cyan]p[/cyan]=full preview]",
+            choices=["y", "n", "p"],
+            default="n",
+            show_choices=False,
+        )
+        if choice == "p":
+            print_reddit_full_preview(subreddit, title, body)
+        else:
+            return choice == "y"
 
 
 def print_post_log_saved(commit_hash: str) -> None:

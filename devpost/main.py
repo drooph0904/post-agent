@@ -42,9 +42,16 @@ def cli() -> None:
 
 @cli.command()
 @click.option("--path", default=".", help="Path to git repo (default: current directory)")
-@click.option("--force", is_flag=True, help="Ignore post log, fetch last 24h regardless")
+@click.option(
+    "--force",
+    type=int,
+    default=None,
+    is_flag=False,
+    flag_value=24,
+    help="Ignore post log; optionally specify hours to look back (e.g. --force 72, default: 24)",
+)
 @click.option("--dry-run", is_flag=True, help="Preview everything, change nothing")
-def run(path: str, force: bool, dry_run: bool) -> None:
+def run(path: str, force: int | None, dry_run: bool) -> None:
     """Read new commits and generate Reddit posts + tweet."""
     from devpost.agent import DevPostAgent
 
@@ -60,7 +67,7 @@ def run(path: str, force: bool, dry_run: bool) -> None:
             raise click.Abort()
 
     agent = DevPostAgent(config=config)
-    agent.run(project_path=path, force=force, dry_run=dry_run)
+    agent.run(project_path=path, force_hours=force, dry_run=dry_run)
 
 
 @cli.command()

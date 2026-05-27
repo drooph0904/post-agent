@@ -57,7 +57,7 @@ class DevPostAgent:
         )
         return ""
 
-    def run(self, project_path: str = ".", force: bool = False, dry_run: bool = False) -> dict:
+    def run(self, project_path: str = ".", force_hours: int | None = None, dry_run: bool = False) -> dict:
         self.results = {}
         self.anything_posted = False
 
@@ -78,18 +78,20 @@ class DevPostAgent:
         repo_name = Path(project_path).resolve().name
         last_hash = self.post_log.get_last_hash(project_path)
 
-        if force or last_hash is None:
-            display.print_post_log_status(False, None, repo_name)
-            commits = git_reader.get_commits_last_hours(24)
+        if force_hours is not None or last_hash is None:
+            hours = force_hours if force_hours is not None else 24
+            display.print_post_log_status(False, None, repo_name, hours)
+            commits = git_reader.get_commits_last_hours(hours)
         else:
             display.print_post_log_status(True, last_hash, repo_name)
             commits = git_reader.get_commits_since_hash(last_hash)
 
         if not commits:
-            if last_hash:
+            hours_label = force_hours if force_hours is not None else 24
+            if last_hash and force_hours is None:
                 display.print_no_new_commits(repo_name, last_hash)
             else:
-                display.print_warning("No commits found in the last 24 hours. Write some code first!")
+                display.print_warning(f"No commits found in the last {hours_label} hours. Write some code first!")
             return {"status": "no_new_commits"}
 
         newest_hash = GitReader.get_newest_hash(commits)
@@ -150,17 +152,17 @@ class DevPostAgent:
                 self.results[f"r/{subreddit}"] = "dry-run skipped"
                 continue
 
-            if display.ask_reddit_approval(subreddit, post["title"], post["body"], i, len(reddit_posts)):
-                display.print_thinking(f"Posting to r/{subreddit}...")
-                url = self.reddit_poster.post_to_subreddit(subreddit, post["title"], post["body"])
-                if url:
-                    display.print_success(f"Posted → {url}")
-                    self.results[f"r/{subreddit}"] = f"posted: {url}"
-                    self.anything_posted = True
+                if display.ask_reddit_approval(subreddit, post["title"], post["body"], i, len(reddit_posts)):
+                    display.print_thinking(f"Posting to r/{subreddit}...")
+                    url = self.reddit_poster.post_to_subreddit(subreddit, post["title"], post["body"])
+                    if url:
+                        display.print_success(f"Posted → {url}")
+                        self.results[f"r/{subreddit}"] = f"posted: {url}"
+                        self.anything_posted = True
+                    else:
+                        self.results[f"r/{subreddit}"] = "failed"
                 else:
-                    self.results[f"r/{subreddit}"] = "failed"
-            else:
-                self.results[f"r/{subreddit}"] = "skipped"
+                    self.results[f"r/{subreddit}"] = "skipped"
 
         # Step 7/7 — Save post log
         display.print_step(7, 7, "Wrapping up...")

@@ -24,7 +24,7 @@ def print_thinking(message: str) -> None:
     console.print(f"  [dim italic]🤖 {message}[/dim italic]")
 
 
-def print_post_log_status(has_hash: bool, hash_val: Optional[str], repo_name: str) -> None:
+def print_post_log_status(has_hash: bool, hash_val: Optional[str], repo_name: str, hours: int = 24) -> None:
     if has_hash and hash_val:
         console.print(
             f"  [blue]📌 Post log found — fetching commits since "
@@ -32,8 +32,7 @@ def print_post_log_status(has_hash: bool, hash_val: Optional[str], repo_name: st
         )
     else:
         console.print(
-            f"  [blue]🆕 First run for [bold]{repo_name}[/bold] "
-            f"— fetching last 24 hours of commits[/blue]"
+            f"  [blue]🆕 Fetching last [bold]{hours}h[/bold] of commits for [bold]{repo_name}[/bold][/blue]"
         )
 
 
